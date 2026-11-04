@@ -88,3 +88,9 @@
 
 ## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
 把car-guide.html和tab,html上传到master
+
+## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
+创建技能skill：提交到github，将本项目提交commit并push到https://github.com/June-Yy-66/ly.git，使用已设置公钥。
+
+## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
+把car-guide.html和tab,html上传到github中ly的库中
