@@ -350,23 +350,48 @@
     </div>
   </div>
   <script>
-  $(document).ready(function () {
-      $('.tab-container .content:first').show()
+  /**
+   * 显示 iconfont 演示页的默认内容，并为选项卡绑定点击切换
+   */
+  function ly_initIconfontTabs() {
+    var ly_tabs = document.querySelectorAll('#tabs li');
+    var ly_panels = document.querySelectorAll('.tab-container .content');
+    if (!ly_tabs.length || !ly_panels.length) {
+      return;
+    }
 
-      $('#tabs li').click(function (e) {
-        var tabContent = $('.tab-container .content')
-        var index = $(this).index()
+    ly_tabs[0].classList.add('active');
+    ly_panels[0].style.display = 'block';
 
-        if ($(this).hasClass('active')) {
-          return
-        } else {
-          $('#tabs li').removeClass('active')
-          $(this).addClass('active')
-
-          tabContent.hide().eq(index).fadeIn()
+    ly_tabs.forEach(function (ly_tab, ly_index) {
+      ly_tab.addEventListener('click', function () {
+        if (ly_tab.classList.contains('active')) {
+          return;
         }
-      })
-    })
+        ly_clearTabState(ly_tabs, ly_panels);
+        ly_tab.classList.add('active');
+        if (ly_panels[ly_index]) {
+          ly_panels[ly_index].style.display = 'block';
+        }
+      });
+    });
+  }
+
+  /**
+   * 先清除所有选项卡与内容面板的选中状态
+   * @param {Array} ly_tabs - 选项卡按钮集合
+   * @param {Array} ly_panels - 内容面板集合
+   */
+  function ly_clearTabState(ly_tabs, ly_panels) {
+    ly_tabs.forEach(function (ly_tab) {
+      ly_tab.classList.remove('active');
+    });
+    ly_panels.forEach(function (ly_panel) {
+      ly_panel.style.display = 'none';
+    });
+  }
+
+  ly_initIconfontTabs();
   </script>
 </body>
 </html>
