@@ -100,3 +100,24 @@
 
 ## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
 将当前文件上传到github
+
+## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
+将这两个附件上传到github中ly1的v库中（仅两个文件放根目录）
+
+## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
+创建技能skill：提交到github，将本项目提交commit并push到https://github.com/June-Yy-66/ly1.git，使用已设置公钥。
+
+## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
+将这两个附件上传到github中ly1的库中（june/index.html、june/tab.html）
+
+## 2026-11-04 | 模型：DeepSeek-V4.1-Flash | 提示词：
+内容怎么没了（排查 ly1 页面选项卡内容空白）
+
+## 2026-11-07 | 模型：DeepSeek-V4.1-Flash | 提示词：
+将index1.html,setting1.html,contact1.html都加在D:\June_css\220刘悦\june\index.html中，新添加一个板块命名为iCity网页设计，并且index1.html,setting1.html,contact1.html这三个页面可以互相跳转。将function_apply.html也加入...命名为抓小球小游戏。将function005.html也加入...命名为猜猜我是几小游戏。将index2.html,tab2.html也加入...命名为汽车导购价格分类
+
+## 2026-11-07 | 模型：DeepSeek-V4.1-Flash | 提示词：
+好的，执行吧（将 fuction005.html 更名为 function005.html 并同步链接）
+
+## 2026-11-07 | 模型：DeepSeek-V4.1-Flash | 提示词：
+好的，提交并推送吧
