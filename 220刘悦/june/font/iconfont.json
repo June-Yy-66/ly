@@ -1,0 +1,65 @@
+{
+  "id": "5231925",
+  "name": "June",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "48416549",
+      "name": "冰淇凌",
+      "font_class": "bingqiling",
+      "unicode": "e78f",
+      "unicode_decimal": 59279
+    },
+    {
+      "icon_id": "48416556",
+      "name": "蛋糕卷",
+      "font_class": "dangaojuan",
+      "unicode": "e790",
+      "unicode_decimal": 59280
+    },
+    {
+      "icon_id": "48416576",
+      "name": "魂",
+      "font_class": "hun",
+      "unicode": "e791",
+      "unicode_decimal": 59281
+    },
+    {
+      "icon_id": "48416581",
+      "name": "魔法心",
+      "font_class": "mofaxin",
+      "unicode": "e792",
+      "unicode_decimal": 59282
+    },
+    {
+      "icon_id": "48416614",
+      "name": "雪花",
+      "font_class": "xuehua",
+      "unicode": "e794",
+      "unicode_decimal": 59284
+    },
+    {
+      "icon_id": "48416625",
+      "name": "星星",
+      "font_class": "xingxing",
+      "unicode": "e797",
+      "unicode_decimal": 59287
+    },
+    {
+      "icon_id": "48426830",
+      "name": "纸飞机",
+      "font_class": "zhifeiji",
+      "unicode": "e795",
+      "unicode_decimal": 59285
+    },
+    {
+      "icon_id": "48426848",
+      "name": "游戏",
+      "font_class": "youxi",
+      "unicode": "e796",
+      "unicode_decimal": 59286
+    }
+  ]
+}

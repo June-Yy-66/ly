@@ -1,0 +1,51 @@
+{
+  "id": "5231925",
+  "name": "June",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "48509449",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "48509462",
+      "name": "发送",
+      "font_class": "fasong",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "48509469",
+      "name": "个性",
+      "font_class": "gexing",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "48509473",
+      "name": "复制",
+      "font_class": "fuzhi",
+      "unicode": "e660",
+      "unicode_decimal": 58976
+    },
+    {
+      "icon_id": "48509483",
+      "name": "文件",
+      "font_class": "wenjian",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "48509496",
+      "name": "闪电",
+      "font_class": "shandian",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    }
+  ]
+}
