@@ -1,11 +1,9 @@
-/* Logo 字体 */
+/* Logo 字体（使用同目录本地图标字体，避免依赖外部 CDN） */
 @font-face {
   font-family: "iconfont logo";
-  src: url('https://at.alicdn.com/t/font_985780_km7mi63cihi.eot?t=1545807318834');
-  src: url('https://at.alicdn.com/t/font_985780_km7mi63cihi.eot?t=1545807318834#iefix') format('embedded-opentype'),
-    url('https://at.alicdn.com/t/font_985780_km7mi63cihi.woff?t=1545807318834') format('woff'),
-    url('https://at.alicdn.com/t/font_985780_km7mi63cihi.ttf?t=1545807318834') format('truetype'),
-    url('https://at.alicdn.com/t/font_985780_km7mi63cihi.svg?t=1545807318834#iconfont') format('svg');
+  src: url('iconfont.woff2') format('woff2'),
+    url('iconfont.woff') format('woff'),
+    url('iconfont.ttf') format('truetype');
 }
 
 .logo {
@@ -36,6 +34,7 @@
 
 #tabs li {
   cursor: pointer;
+  display: inline-block;
   width: 100px;
   height: 40px;
   line-height: 40px;
@@ -58,11 +57,27 @@
   display: none;
 }
 
+/* 兼容处理：外部 cube 样式未加载时，保证选项卡与图标仍横向排列 */
+.dib {
+  display: inline-block;
+}
+
+.dib-box {
+  font-size: 0;
+}
+
+.dib-box>li {
+  font-size: 14px;
+  vertical-align: top;
+}
+
 /* 页面布局 */
 .main {
-  padding: 30px 100px;
-  width: 960px;
+  padding: 30px 20px;
+  width: auto;
+  max-width: 960px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .main .logo {
@@ -73,7 +88,6 @@
   height: 110px;
   margin-top: -50px;
   overflow: hidden;
-  *zoom: 1;
 }
 
 .main .logo a {
@@ -96,10 +110,11 @@
 .icon_lists {
   width: 100% !important;
   overflow: hidden;
-  *zoom: 1;
 }
 
 .icon_lists li {
+  display: inline-block;
+  vertical-align: top;
   width: 100px;
   margin-bottom: 10px;
   margin-right: 20px;

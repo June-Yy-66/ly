@@ -48,7 +48,16 @@
   .wy-demo{margin:18px 0 6px}
   .wy-demo .wy-demo-tag{display:inline-block;font-size:12.5px;color:#0f2b5b;background:#e8f0ff;border:1px solid #c7d8f8;border-radius:999px;padding:4px 14px;margin-bottom:12px}
   .wy-swiper{width:100%;max-width:760px;margin:0 auto;border-radius:16px;overflow:visible!important}
+  /* 电影墙板块：裁切溢出，避免 creative 相邻卡片露出容器外形成白底 */
+  .wy-swiper.wy-cinema{overflow:hidden!important}
   .wy-swiper .swiper{border-radius:16px;box-shadow:0 10px 26px rgba(15,43,91,.18)}
+  /* 修复：给 swiper 定死与 slide 一致的高度，任何效果模式下都不再被 3D 元素撑出下方空白 */
+  .wy-swiper .swiper{height:290px}
+  /* 修复：wrapper 顶部对齐，slide 靠上排列，底部不再留空隙 */
+  .wy-swiper .swiper-wrapper{align-items:flex-start}
+  /* 修复：轮播是各板块最后的元素，去掉其下方外边距并收紧板块底部内边距，图片底部紧贴白色内容区底部 */
+  .wy-sec .wy-demo:last-child{margin-bottom:0}
+  .wy-sec{padding-bottom:0}
   .wy-swiper .swiper-slide{position:relative;height:290px}
   .wy-swiper .swiper-slide img{width:100%;height:100%;object-fit:cover;display:block}
   .wy-swiper .wy-cap{
@@ -76,6 +85,38 @@
   .wy-fx button:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(29,91,191,.18)}
   .wy-fx button.wy-on{background:linear-gradient(135deg,#0f2b5b,#1d5bbf);color:#fff;border-color:transparent}
 
+  /* ── 我的作答区：对话记录卡片 ── */
+  .ly_card{background:#f8faff;border:1px solid #dbe4ff;border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .ly_card-head{font-weight:bold;color:#0f2b5b;font-size:15px;margin-bottom:4px}
+  .ly_stars{color:#e8890c;font-size:13px;margin-left:6px;letter-spacing:2px}
+  .ly_card-sub{font-size:13px;color:#6b7a99;margin-bottom:10px;line-height:1.8}
+  /* 对话气泡：我的提示词 / AI 回答 */
+  .ly_dlg{border-radius:10px;padding:10px 14px;margin:8px 0;font-size:13.5px;line-height:2}
+  .ly_dlg-me{background:#eef4ff;border:1px solid #c7d8f8}
+  .ly_dlg-ai{background:#f3faf3;border:1px solid #bbdfc0}
+  .ly_dlg-tag{font-size:12px;font-weight:bold;margin-bottom:4px}
+  .ly_dlg-me .ly_dlg-tag{color:#1d5bbf}
+  .ly_dlg-ai .ly_dlg-tag{color:#3d8b4f}
+  .ly_dlg p{color:#1f2937}
+  /* 截图粘贴位：虚线空框 + 一句话验证结论，支持拖拽/点击上传 */
+  .ly_shots{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 8px}
+  .ly_shot{flex:1 1 220px;min-height:130px;border:1.5px dashed #9db4dd;border-radius:10px;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;padding:12px;text-align:center;font-size:13px;color:#51617a;cursor:pointer;transition:border-color .2s,background .2s}
+  .ly_shot b{color:#1d5bbf}
+  .ly_shot span{color:#166534;font-weight:bold}
+  /* 拖拽悬停高亮 */
+  .ly_shot.ly_drag{border-color:#1d5bbf;background:#eef4ff}
+  /* 空态提示文字 */
+  .ly_shot-empty{font-size:12px;color:#8ba0c4}
+  /* 上传后的图片预览 */
+  .ly_shot img.ly_shot-img{max-width:100%;max-height:200px;border-radius:8px;object-fit:contain;cursor:default}
+  .ly_shot.ly_has{border-style:solid;background:#f6faff;cursor:default}
+  /* 移除截图按钮 */
+  .ly_shot-del{border:none;background:#fee2e2;color:#b91c1c;font-size:12px;padding:4px 12px;border-radius:999px;cursor:pointer}
+  .ly_shot-del:hover{background:#fecaca}
+  /* 答辩抽问自答框 */
+  .ly_qa{background:#fffbea;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;font-size:13.5px;color:#7c5e10;line-height:2.1}
+  .ly_qa b{color:#b45309}
+
   .wy-back{text-align:center;margin-top:28px}
   .wy-back a{display:inline-block;text-decoration:none;color:#0f2b5b;font-size:14.5px;font-weight:bold;background:#fff;border:1px solid #dbe4ff;border-radius:999px;padding:10px 26px;transition:transform .2s,box-shadow .2s}
   .wy-back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
@@ -91,7 +132,7 @@
     <h1>Swiper 轮播组件 · <b>大国重器光影展（学生版）</b></h1>
     <p>HTML 骨架和 CSS 样式已经全部搭好，图片也备齐了——但这个页面的轮播<b>一个都不会动</b>！
     因为所有 <b>&lt;script&gt; 里的 JS 初始化代码都被抽走了</b>。你的任务：把 4 个轮播全部"救活"。</p>
-    <div class="wy-goals"><i>任务 1 · 救活最小轮播</i><i>任务 2 · 装上圆点和箭头</i><i>任务 3 · 让它自己翻页</i><i>任务 4 · 六种效果随心换</i></div>
+    <div class="wy-goals"><i>任务 1 · 救活最小轮播</i><i>任务 2 · 装上圆点和箭头</i><i>任务 3 · 让它自己翻页</i><i>任务 4 · 六种效果随心换</i><i>任务 5 · 创意电影墙（第 7 个按钮）</i></div>
   </div>
 
   <div class="wy-rule">
@@ -124,6 +165,8 @@
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>2023 年商业首航 · 国产干线客机翱翔蓝天</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>10909 米 · 触碰地球第四极马里亚纳海沟</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>500 米口径 · 世界最大单口径射电望远镜</p></div></div>
+            <!-- 第 6 个展品：爱达·魔都号（img 缩放视差 + 标题反向位移视差） -->
+            <div class="swiper-slide"><img src="swiper-imgs/aidamandu_1.png" alt="爱达·魔都号" data-swiper-parallax="12%" data-swiper-parallax-scale="1.25"><div class="wy-cap" data-swiper-parallax="-150"><h3>爱达·魔都号</h3><p>首艘国产大型邮轮 · 2024年1月首航</p></div></div>
           </div>
         </div>
       </div>
@@ -152,6 +195,8 @@
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>让中国人的大飞机梦照进现实</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>坐底万米 · 深海探测进入"中国时代"</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>南仁东先生 22 年铸就的观天巨目</p></div></div>
+            <!-- 第 6 个展品：爱达·魔都号（img 缩放视差 + 标题反向位移视差） -->
+            <div class="swiper-slide"><img src="swiper-imgs/aidamandu_1.png" alt="爱达·魔都号" data-swiper-parallax="12%" data-swiper-parallax-scale="1.25"><div class="wy-cap" data-swiper-parallax="-150"><h3>爱达·魔都号</h3><p>首艘国产大型邮轮 · 2024年1月首航</p></div></div>
           </div>
           <div class="swiper-pagination" id="wyPag2"></div>
           <div class="swiper-button-prev" id="wyPrev2"></div>
@@ -183,6 +228,8 @@
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>蓝天之上 · 大国担当</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>万米深潜 · 无畏探索</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>仰望星空 · 脚踏实地</p></div></div>
+            <!-- 第 6 个展品：爱达·魔都号（img 缩放视差 + 标题反向位移视差） -->
+            <div class="swiper-slide"><img src="swiper-imgs/aidamandu_1.png" alt="爱达·魔都号" data-swiper-parallax="12%" data-swiper-parallax-scale="1.25"><div class="wy-cap" data-swiper-parallax="-150"><h3>爱达·魔都号</h3><p>首艘国产大型邮轮 · 2024年1月首航</p></div></div>
           </div>
           <div class="swiper-pagination" id="wyPag3"></div>
         </div>
@@ -210,6 +257,8 @@
       <button data-fx="coverflow">coverflow 画廊堆叠（沉浸）</button>
       <button data-fx="flip">flip 翻页（复古）</button>
       <button data-fx="cards">cards 卡片（俏皮）</button>
+      <!-- 第 7 个效果按钮：creative 创意电影墙 -->
+      <button data-fx="creative">creative 电影墙（错落选片）</button>
     </div>
     <div class="wy-demo">
       <span class="wy-demo-tag">🎛️ 演示四 · 效果实验台（点按钮切换 effect）</span>
@@ -221,6 +270,8 @@
             <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>企业官网爱用 fade</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>游戏网站爱用 cube</p></div></div>
             <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>相册页面爱用 coverflow</p></div></div>
+            <!-- 第 6 个展品：爱达·魔都号（img 缩放视差 + 标题反向位移视差） -->
+            <div class="swiper-slide"><img src="swiper-imgs/aidamandu_1.png" alt="爱达·魔都号" data-swiper-parallax="12%" data-swiper-parallax-scale="1.25"><div class="wy-cap" data-swiper-parallax="-150"><h3>爱达·魔都号</h3><p>首艘国产大型邮轮 · 2024年1月首航</p></div></div>
           </div>
           <div class="swiper-pagination" id="wyPag4"></div>
         </div>
@@ -228,7 +279,104 @@
     </div>
   </div>
 
-  <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a></div>
+  <!-- 任务 5：创意电影墙（集成在演示四效果实验台，点击第 7 个按钮切换） -->
+
+  <!-- 我的作答区：任务一 / 二 / 三 · 提示词对话记录 + 验证截图 -->
+  <div class="wy-sec">
+    <div class="wy-sec-head">
+      <span class="wy-no">答</span>
+      <h2>我的作答区<small>任务一 / 二 / 三 · 与 AI 的对话记录 + 验证截图 + 答辩自答</small></h2>
+    </div>
+    <p class="wy-txt">三张作答卡对应答辩任务：保留每轮<b>提示词与 AI 回答</b>，亲自验证后用<b>截图 + 一句话结论</b>说明结果，答辩抽问的自答附在卡片底部。截图粘贴到虚线框内即可。</p>
+
+    <!-- 任务一 · 提示词工程师 -->
+    <div class="ly_card">
+      <div class="ly_card-head">任务一 · 提示词工程师：让 AI 听懂需求<span class="ly_stars">★★</span></div>
+      <p class="ly_card-sub">目标：让 AI 生成 new Swiper('#wySw4', {...})——①无缝循环 ②3.2 秒自动翻页且手动操作后不停止 ③圆点分页器可点击 ④初始效果为 cube。</p>
+      <div class="ly_dlg ly_dlg-me">
+        <div class="ly_dlg-tag">第 1 轮 · 我的提示词</div>
+        <p>生成类似图片的 new Swiper 配置（当时选择器写的 #wySw5），只要代码：① 无缝循环 ② 3.2 秒自动翻页且手动操作后不停止 ③ 圆点分页器可点击 ④ 初始效果为 cube。</p>
+      </div>
+      <div class="ly_dlg ly_dlg-ai">
+        <div class="ly_dlg-tag">AI 回答（要点）</div>
+        <p>四项需求都给了配置，但<b>夹带了需求外的额外参数</b>——多写了 cubeEffect: { slideShadows, shadow, shadowOffset: 100, shadowScale: 0.6 } 阴影偏移配置，违反"只要代码、不加额外配置"的预期。</p>
+      </div>
+      <div class="ly_shots">
+        <div class="ly_shot ly_has" title="已内置验证截图"><div class="ly_shot-empty" hidden>📷 截图区：拖拽图片到此 / 点击选择</div><img class="ly_shot-img" src="swiper-shots/ly_shot1.png" alt="验证截图"><button type="button" class="ly_shot-del">✕ 移除截图</button></div>
+      </div>
+      <p class="ly_card-sub">✅ 一句话结论：第 1 轮代码能跑，但多了需求外的 cubeEffect 参数——直接采用会被扣"未按需求"的分，引出第 2 轮收敛。</p>
+      <div class="ly_dlg ly_dlg-me">
+        <div class="ly_dlg-tag">第 2 轮 · 我的提示词（把需求"说清楚"）</div>
+        <p>请生成标准的 new Swiper('#wySw4', { ... }) 配置代码，严格遵守 4 条需求，<b>禁止自行新增任何额外配置项，不要添加 cubeEffect 相关阴影、偏移等多余参数</b>；选择器固定为 #wySw4 不能改；只输出完整可运行的 Swiper 代码，注释简洁、不要额外解释。</p>
+      </div>
+      <div class="ly_dlg ly_dlg-ai">
+        <div class="ly_dlg-tag">AI 回答（最终代码要点）</div>
+        <p>loop: true ＋ autoplay: { delay: 3200, disableOnInteraction: false } ＋ pagination: { el: '#wySw4 .swiper-pagination', clickable: true } ＋ effect: 'cube'，无任何冗余项。</p>
+      </div>
+      <div class="ly_shots">
+        <div class="ly_shot ly_has" title="已内置验证截图"><div class="ly_shot-empty" hidden>📷 截图区：拖拽图片到此 / 点击选择</div><img class="ly_shot-img" src="swiper-shots/ly_shot2.png" alt="验证截图"><button type="button" class="ly_shot-del">✕ 移除截图</button></div>
+      </div>
+      <p class="ly_card-sub">✅ 一句话结论：页面实测——cube 立方体切换正常、每 3.2 秒自动翻页、手动拖动后继续自动播放、点圆点可跳转，与 4 项需求完全一致。</p>
+      <div class="ly_qa">
+        <b>答辩抽问自答：</b><b>第一版提示词漏了什么</b>——4 条需求本身没漏，但漏了"禁止新增配置项"这条约束，AI 就自作主张加了 cubeEffect 阴影参数；<b>第二轮怎么"说清楚"</b>——逐条编号 4 项需求、直接点名参数与取值（delay: 3200、disableOnInteraction: false、clickable: true）、明令禁止 cubeEffect 等冗余并限定选择器不许改；<b>AI 第一次的代码错在哪</b>——错不在功能而在"听话程度"：夹带需求外的阴影配置，若原样采用就偏离了题目要求。
+      </div>
+    </div>
+
+    <!-- 任务二 · creative 仿写 -->
+    <div class="ly_card">
+      <div class="ly_card-head">任务二 · creative 仿写：课堂没讲，AI 教你<span class="ly_stars">★★★</span></div>
+      <p class="ly_card-sub">目标：对照官方示例 257-effect-creative.html，为演示四新增第 7 个按钮「creative 电影墙」——上一张缩小左移带角度、下一张放大右移进场，要"像电影选片墙"。</p>
+      <div class="ly_dlg ly_dlg-me">
+        <div class="ly_dlg-tag">第 1 轮 · 我的提示词</div>
+        <p>基于 creative effect 生成【creative 电影墙】配置，选择器 #wySw7：prev（滑走上一张）translate 左移、z 轴后退缩小、加 rotate 旋转、开 shadow 阴影；next（进场下一张）translate 右移、z 轴放大靠前、配合旋转、开 shadow 阴影；基础配置仅 grabCursor: true 和 effect: 'creative'，旋转柔和、不要照搬示例里的极端翻转。</p>
+      </div>
+      <div class="ly_dlg ly_dlg-ai">
+        <div class="ly_dlg-tag">AI 回答（要点）</div>
+        <p>给出 creativeEffect 双向配置，但 <b>rotate 写成了数组 [-8,0,0]、[6,0,0]</b>——Swiper 的 creativeEffect.rotate 只接受绕 Z 轴旋转的单个数字，数组被整体忽略，页面上<b>只有位移缩放、看不到旋转</b>。</p>
+      </div>
+      <div class="ly_shots">
+        <div class="ly_shot ly_has" title="已内置验证截图"><div class="ly_shot-empty" hidden>📷 截图区：拖拽图片到此 / 点击选择</div><img class="ly_shot-img" src="swiper-shots/ly_shot3.png" alt="验证截图"><button type="button" class="ly_shot-del">✕ 移除截图</button></div>
+      </div>
+      <p class="ly_card-sub">✅ 一句话结论：第 1 轮页面里卡片只平移缩放、不旋转——rotate 数组写法无效，这是"照搬 CSS rotate3d 习惯"踩的坑。</p>
+      <div class="ly_dlg ly_dlg-me">
+        <div class="ly_dlg-tag">第 2 轮 · 我的提示词（追问 + 收敛参数）</div>
+        <p>生成标准的 new Swiper('#wySw7', {...})，prev、next 都<b>必须配置 rotate 旋转和 shadow 阴影</b>，禁止新增 loop、autoplay 等无关参数；要求电影选片墙错落感、旋转柔和；后续页面出现多余白底，再要求加大位移让相邻卡片完全退出裁切线。</p>
+      </div>
+      <div class="ly_dlg ly_dlg-ai">
+        <div class="ly_dlg-tag">AI 回答（最终参数）</div>
+        <p>prev: translate ['-160%','-4%',-180] + rotate <b>-8</b>（单数字）+ scale 0.85 + shadow；next: translate ['160%','4%',60] + rotate <b>6</b> + scale 1.06 + shadow——rotate 改单数字后旋转生效；位移从 ±110% 加到 ±160%，配合容器裁切，白底消失、静止时只显示当前一张。</p>
+      </div>
+      <div class="ly_shots">
+        <div class="ly_shot ly_has" title="已内置验证截图"><div class="ly_shot-empty" hidden>📷 截图区：拖拽图片到此 / 点击选择</div><img class="ly_shot-img" src="swiper-shots/ly_shot4.png" alt="验证截图"><button type="button" class="ly_shot-del">✕ 移除截图</button></div>
+      </div>
+      <p class="ly_card-sub">✅ 一句话结论：修正 rotate 写法并加大位移后，上一张缩小左转退场、下一张放大右转进场，电影墙效果成立且无白底。</p>
+      <div class="ly_qa">
+        <b>答辩抽问自答：</b><b>prev 的 transform 控制离开视口的上一张</b>——x 负值向左滑走、z 负值向后退、scale 缩小、rotate 左倾；<b>next 控制即将进场的下一张</b>——x 正值从右进场、z 正值靠前、scale 放大、rotate 反向倾斜。<b>百分号相对 slide 自身的宽/高</b>（z 是像素）；把 rotate 改成 <b>20</b>，卡片切换时就会明显转 20 度。
+      </div>
+    </div>
+
+    <!-- 任务三 · 综合创作 + 技术答辩 -->
+    <div class="ly_card">
+      <div class="ly_card-head">任务三 · 综合创作 + 技术答辩：超纲加分项<span class="ly_stars">★★★</span></div>
+      <p class="ly_card-sub">目标：①新增第 6 件展品「爱达·魔都号」（首艘国产大型邮轮，2024 年 1 月首航，AI 生成 16:9 横图）②挑一个课堂没讲过的 Swiper 能力加上去——我选 <b>parallax 视差</b>。</p>
+      <div class="ly_dlg ly_dlg-me">
+        <div class="ly_dlg-tag">我的提示词</div>
+        <p>在现有光影展 Swiper 页面里操作，不新增独立模块，沿用同一个 swiper 实例：①swiper-wrapper 里新增第 6 个 slide 爱达·魔都号，16:9 横版，结构与前面展品一致，标题"爱达·魔都号｜首艘国产大型邮轮，2024 年 1 月首航"；②开启 parallax 视差，图片设置 data-swiper-parallax 参数；③原有 slide、按钮、切换逻辑全部保留。</p>
+      </div>
+      <div class="ly_dlg ly_dlg-ai">
+        <div class="ly_dlg-tag">AI 回答（要点）</div>
+        <p>第 6 个 slide 的 img 用 data-swiper-parallax="12%" + data-swiper-parallax-scale="1.25"，标题用 data-swiper-parallax="-150" 反向位移，6 处初始化配置都加 parallax: true。<b>第一次给的是固定 300px 位移</b>——100% 宽的图片会被推离滑块露出白底，追问后改为 12% 百分比并叠加 scale 1.25 让图片溢出补边，视差时不露白。</p>
+      </div>
+      <div class="ly_shots">
+        <div class="ly_shot ly_has" title="已内置验证截图"><div class="ly_shot-empty" hidden>📷 截图区：拖拽图片到此 / 点击选择</div><img class="ly_shot-img" src="swiper-shots/ly_shot5.png" alt="验证截图"><button type="button" class="ly_shot-del">✕ 移除截图</button></div>
+      </div>
+      <div class="ly_qa">
+        <b>答辩四连问自答：</b>①<b>这段代码什么意思</b>——parallax: true 打开视差引擎，每次切换 Swiper 按 progress（-1→1）给带 data-swiper-parallax-* 的元素插值 transform，做出前景慢、背景快的景深；②<b>AI 第一次给哪不对、改了什么</b>——固定 300px 位移会露白底，改成 12% 百分比 + scale 1.25 溢出补边；③<b>新参数的作用</b>——parallax 是总开关，data-swiper-parallax 是位移距离（% 相对 slide 宽），-scale 是缩放幅度，-opacity 控制淡入淡出；④<b>把 delay 改成 3200</b>——wySw4 每 3.2 秒自动翻一页，配合 disableOnInteraction: false，手动拖完还会接着自动翻。
+      </div>
+    </div>
+  </div>
+
+  <div class="wy-back"><a href="220刘悦/june/index.html">← 返回课堂实践中心</a></div>
 
   <footer>Swiper 课堂操作任务 · 大国重器光影展（学生版） · 高级网页设计 · 2026-2027-1</footer>
 </div>
@@ -240,13 +388,18 @@
 
   // ── 任务 1：初始化 #wySw1，让它至少可以拖动 ──
   // TODO: 在这里写你的代码
-var wySw1 = new Swiper("#wySw1", {});
+var wySw1 = new Swiper("#wySw1", {
+  // 超纲能力：视差效果（配合 slide 内 data-swiper-parallax 参数）
+  parallax: true,
+});
 
   // ── 任务 2：初始化 #wySw2，循环 + 600ms + 圆点可点 + 箭头切换 ──
   // TODO: 在这里写你的代码
 var wySw2 = new Swiper("#wySw2", {
       speed: 600,
       loop: true,
+      // 超纲能力：视差效果（配合 slide 内 data-swiper-parallax 参数）
+      parallax: true,
       pagination: {
         el: "#wyPag2",
         clickable: true,
@@ -264,6 +417,8 @@ var wySw3 = new Swiper("#wySw3", {
         delay: 2500,
         disableOnInteraction: false,
       },
+      // 超纲能力：视差效果（配合 slide 内 data-swiper-parallax 参数）
+      parallax: true,
       pagination: {
         el: "#wyPag3",
         clickable: true,
@@ -273,16 +428,22 @@ var wySw3 = new Swiper("#wySw3", {
   // ── 任务 4：初始化 #wySw4，循环 + 3.2 秒自动播放 + 圆点 + 初始 effect ──
   // TODO: 在这里写你的代码
 var wySw4 = new Swiper("#wySw4", {
+  // 1. 无缝循环
+  loop: true,
+  // 2. 自动翻页：3.2 秒，手动操作后不停止
   autoplay: {
     delay: 3200,
     disableOnInteraction: false,
   },
-  spaceBetween: 30,
-  effect: "fade",
+  // 3. 圆点分页器可点击
   pagination: {
-    el: "#wyPag4",
+    el: "#wySw4 .swiper-pagination",
     clickable: true,
   },
+  // 超纲能力：视差效果（配合 slide 内 data-swiper-parallax 参数）
+  parallax: true,
+  // 4. 立方体切换效果
+  effect: "cube",
 });
 
   // ── 任务 4 进阶：补全按钮点击事件，实现六种效果实时切换 ──
@@ -295,25 +456,137 @@ document.querySelectorAll('.wy-fx button').forEach(b=>b.classList.remove('wy-on'
     this.classList.add('wy-on');
 
 
-      // TODO 2：销毁旧的 wySw4 实例
-wySw4.destroy();
+      // TODO 2：销毁旧的 wySw4 实例（cleanStyles 清除上一种效果残留的行内变换）
+wySw4.destroy(true, true);
 
       // TODO 3：用新 effect 重建实例（把其它配置原样保留）
   let fxName = this.dataset.fx;
-    wySw4 = new Swiper("#wySw4", {
-      autoplay: {
-        delay: 3200,
-        disableOnInteraction: false,
-      },
-      spaceBetween: 30,
-      effect: fxName,
-      pagination: {
-        el: "#wyPag4",
-        clickable: true,
-      },
-    });
+    if (fxName === 'creative') {
+      // creative 电影墙：共用容器切换为 #wySw7，并临时裁切溢出（避免相邻卡片露出白底）
+      var ly_el = document.getElementById('wySw4');
+      if (ly_el) {
+        ly_el.closest('.wy-swiper').classList.add('wy-cinema');
+        ly_el.id = 'wySw7';
+      }
+      wySw4 = new Swiper('#wySw7', {
+        // 抓取时显示手势光标
+        grabCursor: true,
+        // 视差效果随切换保留
+        parallax: true,
+        // 自定义变换效果
+        effect: 'creative',
+        creativeEffect: {
+          // 上一张：左移退出视野、z 轴后退缩小、柔和左倾旋转，带阴影
+          prev: {
+            translate: ['-115%', '-6%', -200],
+            rotate: -6,
+            scale: 0.9,
+            shadow: true
+          },
+          // 下一张：右移进场、z 轴靠前放大、柔和右倾旋转，带阴影
+          next: {
+            translate: ['115%', '6%', 100],
+            rotate: 5,
+            scale: 1.05,
+            shadow: true
+          }
+        }
+      });
+    } else {
+      // 其它 6 种效果：容器切回 #wySw4，取消裁切，按标准四件套配置重建
+      var ly_el7 = document.getElementById('wySw7');
+      if (ly_el7) {
+        ly_el7.closest('.wy-swiper').classList.remove('wy-cinema');
+        ly_el7.id = 'wySw4';
+      }
+      wySw4 = new Swiper("#wySw4", {
+        // 无缝循环
+        loop: true,
+        // 视差效果随切换保留
+        parallax: true,
+        // 3.2 秒自动翻页，手动操作后不停止
+        autoplay: {
+          delay: 3200,
+          disableOnInteraction: false,
+        },
+        // 圆点分页器可点击
+        pagination: {
+          el: "#wySw4 .swiper-pagination",
+          clickable: true,
+        },
+        // 切换效果
+        effect: fxName,
+      });
+    }
   })
 })
+
+  // ══ 我的作答区：截图粘贴框拖拽上传组件 ══
+
+  /**
+   * 处理选中/拖入的图片文件：生成本地预览并显示在截图框内
+   * @param {HTMLElement} ly_box - 截图框元素
+   * @param {File} ly_file - 用户提供的图片文件
+   */
+  function ly_loadShot(ly_box, ly_file) {
+    // 仅接受图片类型文件
+    if (!ly_file || ly_file.type.indexOf('image/') !== 0) return;
+    var ly_img = ly_box.querySelector('.ly_shot-img');
+    // 释放上一张的预览地址，避免内存泄漏
+    if (ly_img.src.indexOf('blob:') === 0) URL.revokeObjectURL(ly_img.src);
+    ly_img.src = URL.createObjectURL(ly_file);
+    ly_img.hidden = false;
+    ly_box.querySelector('.ly_shot-empty').hidden = true;
+    ly_box.querySelector('.ly_shot-del').hidden = false;
+    ly_box.classList.add('ly_has');
+  }
+
+  /**
+   * 移除截图框内已上传的图片，恢复空态
+   * @param {HTMLElement} ly_box - 截图框元素
+   */
+  function ly_clearShot(ly_box) {
+    var ly_img = ly_box.querySelector('.ly_shot-img');
+    if (ly_img.src.indexOf('blob:') === 0) URL.revokeObjectURL(ly_img.src);
+    ly_img.removeAttribute('src');
+    ly_img.hidden = true;
+    ly_box.querySelector('.ly_shot-empty').hidden = false;
+    ly_box.querySelector('.ly_shot-del').hidden = true;
+    ly_box.classList.remove('ly_has');
+  }
+
+  // 为全部截图框绑定：点击选择文件 + 拖拽上传 + 移除按钮
+  document.querySelectorAll('.ly_shot').forEach(function (ly_box) {
+    // 点击空框打开文件选择器（已上传时点击框体不重复打开）
+    ly_box.addEventListener('click', function () {
+      if (ly_box.classList.contains('ly_has')) return;
+      var ly_input = document.createElement('input');
+      ly_input.type = 'file';
+      ly_input.accept = 'image/*';
+      ly_input.onchange = function () { ly_loadShot(ly_box, ly_input.files[0]); };
+      ly_input.click();
+    });
+    // 拖拽悬停时高亮边框
+    ly_box.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      ly_box.classList.add('ly_drag');
+    });
+    // 拖拽离开取消高亮
+    ly_box.addEventListener('dragleave', function () {
+      ly_box.classList.remove('ly_drag');
+    });
+    // 松手落图：读取拖入的图片文件并预览
+    ly_box.addEventListener('drop', function (e) {
+      e.preventDefault();
+      ly_box.classList.remove('ly_drag');
+      ly_loadShot(ly_box, e.dataTransfer.files[0]);
+    });
+    // 移除按钮：清空预览恢复空态
+    ly_box.querySelector('.ly_shot-del').addEventListener('click', function (e) {
+      e.stopPropagation();
+      ly_clearShot(ly_box);
+    });
+  });
 </script>
 </body>
 </html>
