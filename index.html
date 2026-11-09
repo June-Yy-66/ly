@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<!--
+  作者：王垚
+  建立时间：2026-11-09
+  使用大模型：GLM-5.3-Flash
+  功能名称：课堂实践总目录（GitHub Pages 默认首页）
+-->
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="刘悦的《高级网页设计》课堂实践目录">
+    <title>高级网页设计 · 课堂实践</title>
+    <style>
+        :root {
+            --ink: #18212b;
+            --muted: #64707b;
+            --paper: #f7f4ed;
+            --paper-deep: #ebe5d8;
+            --coral: #ee6848;
+            --coral-dark: #bb422c;
+            --teal: #197b78;
+            --yellow: #f4c95d;
+            --line: rgba(24, 33, 43, .14);
+            --shadow: 0 22px 55px rgba(40, 37, 28, .12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 86% 8%, rgba(244, 201, 93, .28), transparent 22rem),
+                linear-gradient(135deg, #faf8f1 0%, var(--paper) 52%, #f1eee5 100%);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .shell {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            letter-spacing: .04em;
+        }
+
+        .brand-mark {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            place-items: center;
+            color: #fff;
+            background: var(--coral);
+            border-radius: 11px 11px 11px 3px;
+            font-size: 19px;
+            transform: rotate(-5deg);
+        }
+
+        .top-link {
+            color: var(--muted);
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .top-link:hover {
+            color: var(--coral-dark);
+        }
+
+        .hero {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 60px;
+            align-items: center;
+            min-height: 430px;
+            padding: 70px 0 58px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 18px;
+            color: var(--teal);
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            width: 28px;
+            height: 3px;
+            background: var(--yellow);
+            content: "";
+        }
+
+        h1, h2, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            max-width: 680px;
+            margin-bottom: 22px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(42px, 7vw, 78px);
+            font-weight: 700;
+            letter-spacing: -.045em;
+            line-height: .98;
+        }
+
+        h1 span {
+            color: var(--coral);
+        }
+
+        .hero-copy {
+            max-width: 540px;
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .hero-art {
+            position: relative;
+            min-height: 260px;
+        }
+
+        .orbit {
+            position: absolute;
+            inset: 12px 15px 10px 15px;
+            border: 1px solid rgba(25, 123, 120, .35);
+            border-radius: 47% 53% 45% 55%;
+            transform: rotate(21deg);
+        }
+
+        .orbit::before,
+        .orbit::after {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--coral);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .orbit::before {
+            top: 12%;
+            right: 7%;
+        }
+
+        .orbit::after {
+            bottom: 12%;
+            left: 7%;
+            background: var(--teal);
+        }
+
+        .art-note {
+            position: absolute;
+            top: 36px;
+            right: 8%;
+            display: grid;
+            width: 190px;
+            height: 190px;
+            place-items: center;
+            padding: 25px;
+            color: var(--ink);
+            background: var(--yellow);
+            border-radius: 48% 52% 55% 45%;
+            box-shadow: var(--shadow);
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 25px;
+            font-style: italic;
+            line-height: 1.15;
+            text-align: center;
+            transform: rotate(8deg);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            margin-bottom: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 32px;
+            letter-spacing: -.03em;
+        }
+
+        .section-heading p {
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            padding-bottom: 72px;
+        }
+
+        .course-card {
+            display: flex;
+            min-height: 275px;
+            flex-direction: column;
+            padding: 25px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, .54);
+            box-shadow: 0 7px 24px rgba(40, 37, 28, .04);
+            text-decoration: none;
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+
+        .course-card:hover {
+            border-color: var(--coral);
+            box-shadow: var(--shadow);
+            transform: translateY(-6px);
+        }
+
+        .card-index {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 44px;
+            color: var(--teal);
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 18px;
+            font-style: italic;
+        }
+
+        .card-icon {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            place-items: center;
+            color: #fff;
+            background: var(--teal);
+            border-radius: 50%;
+            font-family: "Courier New", monospace;
+            font-size: 19px;
+            font-style: normal;
+        }
+
+        .course-card:nth-child(2) .card-icon {
+            background: var(--coral);
+        }
+
+        .course-card:nth-child(3) .card-icon {
+            color: var(--ink);
+            background: var(--yellow);
+        }
+
+        .course-card h3 {
+            margin: 0 0 9px;
+            font-size: 22px;
+        }
+
+        .course-card p {
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .card-action {
+            margin-top: auto;
+            color: var(--coral-dark);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .prompt {
+            margin-bottom: 38px;
+            padding: 27px 30px;
+            border-left: 5px solid var(--teal);
+            background: var(--paper-deep);
+        }
+
+        .prompt summary {
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .prompt p {
+            max-width: 850px;
+            margin: 18px 0 0;
+            color: #4f5961;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+
+        footer {
+            padding: 25px 0 35px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* 扩展板块：iCity、小游戏与汽车导购 */
+        .ly_extra-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            padding-bottom: 72px;
+        }
+
+        .ly_extra-card {
+            display: flex;
+            min-height: 230px;
+            flex-direction: column;
+            padding: 25px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, .54);
+            box-shadow: 0 7px 24px rgba(40, 37, 28, .04);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+
+        .ly_extra-card:hover {
+            border-color: var(--coral);
+            box-shadow: var(--shadow);
+            transform: translateY(-6px);
+        }
+
+        .ly_extra-index {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            color: var(--teal);
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        .ly_extra-card h3 {
+            margin: 0 0 9px;
+            font-size: 21px;
+        }
+
+        .ly_extra-card p {
+            margin-bottom: 16px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .ly_extra-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .ly_extra-link {
+            display: inline-block;
+            padding: 7px 14px;
+            color: #fff;
+            background: var(--teal);
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: background .2s ease;
+        }
+
+        .ly_extra-link:hover {
+            background: var(--coral);
+        }
+
+        @media (max-width: 760px) {
+            .ly_extra-grid {
+                grid-template-columns: 1fr;
+                padding-bottom: 48px;
+            }
+
+            .shell {
+                width: min(100% - 28px, 560px);
+            }
+
+            .topbar {
+                padding: 17px 0;
+            }
+
+            .hero {
+                display: block;
+                min-height: auto;
+                padding: 55px 0 35px;
+            }
+
+            .hero-art {
+                min-height: 205px;
+                margin-top: 18px;
+            }
+
+            .art-note {
+                top: 12px;
+                right: 18%;
+                width: 155px;
+                height: 155px;
+                font-size: 21px;
+            }
+
+            .section-heading {
+                display: block;
+            }
+
+            .section-heading h2 {
+                margin-bottom: 6px;
+            }
+
+            .course-grid {
+                grid-template-columns: 1fr;
+                padding-bottom: 48px;
+            }
+
+            .course-card {
+                min-height: 220px;
+            }
+
+            .card-index {
+                margin-bottom: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="shell topbar">
+        <a class="brand" href="index.html" aria-label="返回课堂首页">
+            <span class="brand-mark">L</span>
+            <span>刘悦 · 课堂实践</span>
+        </a>
+        <a class="top-link" href="#prompt">查看本次提示词 ↓</a>
+    </header>
+
+    <main>
+        <section class="shell hero" aria-labelledby="page-title">
+            <div>
+                <p class="eyebrow">Advanced Web Design / 2026</p>
+                <h1 id="page-title">高级网页设计<br><span>课堂实践</span></h1>
+                <p class="hero-copy">把课堂里的布局、图标与交互练习，整理成一个持续生长的网页目录。每一次打开，都是下一次创作的起点。</p>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+                <div class="orbit"></div>
+                <div class="art-note">learn<br>by<br>building</div>
+            </div>
+        </section>
+
+        <section class="shell" aria-labelledby="directory-title">
+            <div class="section-heading">
+                <h2 id="directory-title">课堂目录</h2>
+                <p>目前收录 7 个实践方向 · 持续更新中</p>
+            </div>
+            <div class="course-grid">
+                <a class="course-card" href="220刘悦/june/flex_css.html">
+                    <div class="card-index"><span>01 / layout</span><span class="card-icon">↔</span></div>
+                    <h3>Flex 复习</h3>
+                    <p>导航布局、三等分布局、响应式卡片网格与侧边栏布局练习。</p>
+                    <span class="card-action">进入实践 →</span>
+                </a>
+                <a class="course-card" href="220刘悦/june/svg005.html">
+                    <div class="card-index"><span>02 / graphic</span><span class="card-icon">✦</span></div>
+                    <h3>SVG 图标</h3>
+                    <p>使用 SVG symbol 与 use 元素构建可复用的图标标签栏。</p>
+                    <span class="card-action">进入实践 →</span>
+                </a>
+                <a class="course-card" href="220刘悦/june/font/demo_index.html">
+                    <div class="card-index"><span>03 / type</span><span class="card-icon">Aa</span></div>
+                    <h3>字体图标</h3>
+                    <p>查看本地 iconfont 字体图标资源与对应的字符编码示例。</p>
+                    <span class="card-action">查看图标 →</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="shell" aria-labelledby="extra-title">
+            <div class="section-heading">
+                <h2 id="extra-title">扩展板块</h2>
+                <p>iCity 网页设计 · 小游戏 · 汽车导购 · Swiper 光影展</p>
+            </div>
+            <div class="ly_extra-grid">
+                <article class="ly_extra-card">
+                    <div class="ly_extra-index"><span>04 / iCity</span><span class="card-icon">◎</span></div>
+                    <h3>iCity 网页设计</h3>
+                    <p>移动端社交应用的三个页面：世界、通讯录与设置，三个页面之间可以互相跳转。</p>
+                    <div class="ly_extra-links">
+                        <a class="ly_extra-link" href="index1.html">世界</a>
+                        <a class="ly_extra-link" href="contact1.html">通讯录</a>
+                        <a class="ly_extra-link" href="setting1.html">设置</a>
+                    </div>
+                </article>
+                <article class="ly_extra-card">
+                    <div class="ly_extra-index"><span>05 / function</span><span class="card-icon">●</span></div>
+                    <h3>抓小球小游戏</h3>
+                    <p>用函数的三个方法的应用实现的小游戏，练习事件监听与元素移动。</p>
+                    <div class="ly_extra-links">
+                        <a class="ly_extra-link" href="function_apply.html">进入游戏</a>
+                    </div>
+                </article>
+                <article class="ly_extra-card">
+                    <div class="ly_extra-index"><span>06 / guess</span><span class="card-icon">?</span></div>
+                    <h3>猜猜我是几小游戏</h3>
+                    <p>JS 函数练习页面，通过输入数字猜测结果，熟悉条件判断与提示反馈。</p>
+                    <div class="ly_extra-links">
+                        <a class="ly_extra-link" href="function005.html">开始猜测</a>
+                    </div>
+                </article>
+                <article class="ly_extra-card">
+                    <div class="ly_extra-index"><span>07 / guide</span><span class="card-icon">车</span></div>
+                    <h3>汽车导购价格分类</h3>
+                    <p>汽车导购价格分类页面，以及配套的新闻 Tab 选项卡页面。</p>
+                    <div class="ly_extra-links">
+                        <a class="ly_extra-link" href="220刘悦/june/index2.html">价格分类</a>
+                        <a class="ly_extra-link" href="220刘悦/june/tab2.html">新闻选项卡</a>
+                    </div>
+                </article>
+                <article class="ly_extra-card">
+                    <div class="ly_extra-index"><span>08 / swiper-task</span><span class="card-icon">≡</span></div>
+                    <h3>Swiper 光影展任务</h3>
+                    <p>Swiper 效果实战与答辩作答：循环自动播放、creative 电影墙、parallax 视差超纲加分项，附提示词对话记录与验证截图。</p>
+                    <div class="ly_extra-links">
+                        <a class="ly_extra-link" href="swiper-task.html">进入任务页</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="shell prompt" id="prompt">
+            <details>
+                <summary>本页面提示词</summary>
+                <p>创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用cdn，新页面名称为index.html，主题为刘悦的《高级网页设计》课堂实践，美化页面，课堂目录中包含flex复习、字体图标、其余模块后续在增加。页面中包括本提示词。</p>
+            </details>
+        </section>
+    </main>
+
+    <footer class="shell">
+        刘悦的《高级网页设计》课堂实践 · 本地原生 HTML / CSS
+    </footer>
+</body>
+</html>
