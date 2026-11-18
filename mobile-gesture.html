@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<!--
+  作者：刘悦
+  学号：24002120220
+  建立时间：2026-11-18
+  使用大模型：GLM-5.3-FlashX
+  功能名称：移动端手势滑动美食卡片页——touchstart/touchend 左右滑动切换 4 道菜卡片
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>移动端手势滑动 · 美食卡片</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:#f6f8fc;min-height:100vh;padding:40px 18px 60px}
+  /* 页面大标题：红色字体 */
+  .ly_title{text-align:center;font-size:26px;color:red;letter-spacing:2px;margin-bottom:24px}
+  /* 页面其余文字统一蓝色 */
+  body,.ly_card,.ly_counter,.ly_hint,.ly_tip,.ly_back a{color:blue}
+
+  /* 卡片容器：限制横向手势只在容器内生效，纵向仍可滚动页面 */
+  .ly_stage{max-width:420px;margin:0 auto;touch-action:pan-y}
+  /* 美食卡片：上图下文布局由渐变背景 + 文字区组成 */
+  .ly_card{
+    position:relative;height:340px;border-radius:18px;overflow:hidden;
+    box-shadow:0 12px 30px rgba(31,41,55,.18);user-select:none;
+    display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  /* 切换时的 0.3s 过渡动画：两张方向各一组关键帧 */
+  .ly_card.ly_anim-next{animation:ly_slide_next .3s ease}
+  .ly_card.ly_anim-prev{animation:ly_slide_prev .3s ease}
+  @keyframes ly_slide_next{from{transform:translateX(60px);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes ly_slide_prev{from{transform:translateX(-60px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+  /* 卡片文字区：菜名 + 简介 */
+  .ly_info{padding:22px 20px 26px;background:linear-gradient(transparent,rgba(5,15,35,.55))}
+  .ly_name{font-size:24px;font-weight:bold;letter-spacing:2px}
+  .ly_desc{font-size:14px;line-height:1.9;margin-top:8px;opacity:.92}
+
+  /* 底部状态区：张数指示 + 边界提示 */
+  .ly_status{max-width:420px;margin:18px auto 0;text-align:center}
+  .ly_counter{font-size:15px;font-weight:bold}
+  .ly_hint{font-size:13px;margin-top:8px;min-height:20px;opacity:0;transition:opacity .25s}
+  .ly_hint.ly_show{opacity:1}
+
+  .ly_tip{text-align:center;font-size:13px;margin-top:26px}
+  /* 返回首页链接 */
+  .ly_back{text-align:center;margin-top:16px}
+  .ly_back a{font-size:14.5px;font-weight:bold;text-decoration:none;border:1px solid #c7d8f8;background:#fff;border-radius:999px;padding:10px 26px;display:inline-block}
+</style>
+</head>
+<body>
+
+  <h1 class="ly_title">美食卡片 · 左右滑动切换</h1>
+
+  <!-- 卡片容器：触摸手势作用区域，touch-action:pan-y 保证纵向可滚动 -->
+  <div class="ly_stage" id="ly_stage">
+    <div class="ly_card" id="ly_card">
+      <div class="ly_info">
+        <div class="ly_name" id="ly_name"></div>
+        <div class="ly_desc" id="ly_desc"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ly_status">
+    <!-- 张数指示：第 X/4 张 -->
+    <div class="ly_counter" id="ly_counter"></div>
+    <!-- 边界提示文字：已是第一张/最后一张时短暂显示 -->
+    <div class="ly_hint" id="ly_hint"></div>
+  </div>
+
+  <p class="ly_tip">在卡片上左右滑动即可切换美食</p>
+  <div class="ly_back"><a href="index.html">返回首页</a></div>
+
+<script>
+  /** 滑动切换的横向位移阈值（px） */
+  var ly_threshold = 40;
+  /** 冷却时间（ms）：防止快速连滑一次跳两张 */
+  var ly_cooldown = 300;
+  /** 当前卡片索引（0 起） */
+  var ly_index = 0;
+  /** 冷却锁：true 期间忽略新的切换请求 */
+  var ly_lock = false;
+  /** touchstart 记录的起点横坐标 */
+  var ly_startX = 0;
+  /** touchstart 记录的起点纵坐标 */
+  var ly_startY = 0;
+  /** 边界提示文字的定时器 */
+  var ly_hintTimer = null;
+
+  /** 4 道菜的数据：菜名、简介、渐变背景 */
+  var ly_dishes = [
+    { name: '麻婆豆腐', desc: '川菜经典，豆腐嫩滑、麻辣鲜香，红亮的肉末酱汁裹住每一块豆腐，下饭一绝。',
+      bg: 'linear-gradient(135deg,#ff512f,#dd2476)' },
+    { name: '东坡肉', desc: '江南名菜，五花肉慢火细炖数小时，色泽红亮、酥烂而形不碎，入口肥而不腻。',
+      bg: 'linear-gradient(135deg,#f7971e,#ffd200)' },
+    { name: '白切鸡', desc: '粤菜代表，皮爽肉滑、原汁原味，配姜葱蘸料最能吃出鸡肉本身的清甜。',
+      bg: 'linear-gradient(135deg,#11998e,#38ef7d)' },
+    { name: '松鼠桂鱼', desc: '苏帮名馔，桂鱼改花刀炸后浇糖醋汁，形如松鼠、外脆里嫩，酸甜开胃。',
+      bg: 'linear-gradient(135deg,#4f46e5,#9333ea)' }
+  ];
+
+  /**
+   * 渲染当前索引对应的菜品：更新渐变背景、菜名、简介和张数指示文字
+   */
+  function ly_render() {
+    var ly_dish = ly_dishes[ly_index];
+    document.getElementById('ly_card').style.background = ly_dish.bg;
+    document.getElementById('ly_name').textContent = ly_dish.name;
+    document.getElementById('ly_desc').textContent = ly_dish.desc;
+    document.getElementById('ly_counter').textContent = '第 ' + (ly_index + 1) + '/' + ly_dishes.length + ' 张';
+  }
+
+  /**
+   * 切换到指定索引的卡片：按滑动方向播放 0.3s 过渡动画，冷却期内直接忽略，越界则显示边界提示
+   * @param {number} ly_target - 目标索引（0 起）
+   * @param {string} ly_dir - 滑动方向：'next' 左滑看下一张 / 'prev' 右滑看上一张
+   */
+  function ly_switchTo(ly_target, ly_dir) {
+    // 冷却期内忽略请求，防止快速连滑一次跳两张
+    if (ly_lock) { return; }
+    if (ly_target < 0) { ly_showHint('已经是第一张'); return; }
+    if (ly_target >= ly_dishes.length) { ly_showHint('已经是最后一张'); return; }
+    // 上锁并安排 300ms 后解锁
+    ly_lock = true;
+    setTimeout(function () { ly_lock = false; }, ly_cooldown);
+    // 更新内容并按滑动方向重放动画：先移除旧动画类，强制回流后再加新类，保证连续切换也能重新播放
+    ly_index = ly_target;
+    ly_render();
+    var ly_card = document.getElementById('ly_card');
+    ly_card.classList.remove('ly_anim-next', 'ly_anim-prev');
+    void ly_card.offsetWidth;
+    ly_card.classList.add(ly_dir === 'prev' ? 'ly_anim-prev' : 'ly_anim-next');
+  }
+
+  /**
+   * 显示边界提示文字（已经是第一张/最后一张），1.5 秒后自动淡出
+   * @param {string} ly_text - 提示内容
+   */
+  function ly_showHint(ly_text) {
+    var ly_hint = document.getElementById('ly_hint');
+    ly_hint.textContent = ly_text;
+    ly_hint.classList.add('ly_show');
+    clearTimeout(ly_hintTimer);
+    ly_hintTimer = setTimeout(function () { ly_hint.classList.remove('ly_show'); }, 1500);
+  }
+
+  /**
+   * 触摸开始：记录第一根触点的起点坐标
+   * @param {TouchEvent} ly_e - 触摸事件对象
+   */
+  function ly_onTouchStart(ly_e) {
+    ly_startX = ly_e.touches[0].clientX;
+    ly_startY = ly_e.touches[0].clientY;
+  }
+
+  /**
+   * 触摸结束：用 changedTouches[0] 计算横向位移，超过阈值 40px 且横向分量大于纵向时判定为滑动
+   * @param {TouchEvent} ly_e - 触摸事件对象
+   */
+  function ly_onTouchEnd(ly_e) {
+    var ly_dx = ly_e.changedTouches[0].clientX - ly_startX;
+    var ly_dy = ly_e.changedTouches[0].clientY - ly_startY;
+    // 横向位移不足阈值，或纵向分量更大（属于滚动页面），都不算滑动切换
+    if (Math.abs(ly_dx) < ly_threshold || Math.abs(ly_dx) <= Math.abs(ly_dy)) { return; }
+    if (ly_dx < 0) {
+      // 手指向左滑：切到下一张
+      ly_switchTo(ly_index + 1, 'next');
+    } else {
+      // 手指向右滑：切到上一张
+      ly_switchTo(ly_index - 1, 'prev');
+    }
+  }
+
+  /**
+   * 页面初始化：绑定触摸事件并渲染第一张卡片
+   */
+  function ly_init() {
+    var ly_stage = document.getElementById('ly_stage');
+    ly_stage.addEventListener('touchstart', ly_onTouchStart, { passive: true });
+    ly_stage.addEventListener('touchend', ly_onTouchEnd);
+    ly_render();
+  }
+
+  ly_init();
+</script>
+</body>
+</html>

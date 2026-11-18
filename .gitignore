@@ -1,2 +1,2 @@
-# 备份的嵌套 git 仓库（不随主仓库发布）
-220刘悦/june/.git_bak/
+.git_bak/
+node_modules/

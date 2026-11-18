@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+  作者：刘悦
+  建立时间：2026-11-13
+  使用大模型：GLM-5.3-FlashX
+  功能名称：诗词展示页——上图下文卡片结构，数据来自本地 3004 端口数据服务器的 db.json poems
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>诗词展示 · 上图下文</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:#f6f8fc;padding:40px 20px 60px}
+  /* 页面大标题：红色字体 */
+  .ly_page-title{text-align:center;font-size:30px;color:red;letter-spacing:2px;margin-bottom:26px}
+  /* 其余文字统一蓝色 */
+  body, .ly_card, .ly_card h2, .ly_card p, .ly_tip{color:blue}
+  /* 卡片容器：横向排列自动换行 */
+  .ly_list{display:flex;flex-wrap:wrap;gap:20px;max-width:1000px;margin:0 auto}
+  /* 单张卡片：上图下文结构 */
+  .ly_card{flex:1 1 220px;max-width:300px;background:#fff;border:1px solid #c7d8f8;border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(15,43,91,.12)}
+  .ly_card img{width:100%;height:180px;object-fit:cover;display:block}
+  .ly_card-body{padding:14px 16px 18px}
+  .ly_card h2{font-size:18px;margin-bottom:8px}
+  .ly_card p{font-size:14px;line-height:1.9}
+  /* 加载提示文字 */
+  .ly_tip{text-align:center;font-size:14px;margin-top:20px}
+  /* 返回首页链接 */
+  .ly_back{text-align:center;margin-top:30px}
+  .ly_back a{color:blue;font-size:14.5px;font-weight:bold;text-decoration:none;border:1px solid #c7d8f8;background:#fff;border-radius:999px;padding:10px 26px;display:inline-block}
+</style>
+</head>
+<body>
+
+  <h1 class="ly_page-title">诗词展示</h1>
+
+  <!-- 上图下文卡片列表：数据由 JS 从服务器获取后渲染 -->
+  <div class="ly_list" id="ly_list"></div>
+  <p class="ly_tip" id="ly_tip">正在从数据服务器（127.0.0.1:3004）加载诗词数据……</p>
+
+  <div class="ly_back"><a href="index.html">返回首页</a></div>
+
+<script>
+  /** 数据服务器的地址：接口和图片均由它提供 */
+  var ly_api = 'http://127.0.0.1:3004';
+
+  /**
+   * 把接口返回的图片路径转换成可直接访问的图片地址：以 / 开头的相对路径拼上数据服务器地址，完整网址则原样返回
+   * @param {string} ly_pic - 接口返回的图片路径（如 /img/6.jpg 或完整网址）
+   * @returns {string} 可用于 img src 的完整图片地址
+   */
+  function ly_getPicUrl(ly_pic) {
+    return ly_pic.indexOf('http') === 0 ? ly_pic : ly_api + ly_pic;
+  }
+
+  /**
+   * 渲染诗词卡片：根据服务器返回的 poems 数组，生成上图（pic）下文（title、content）结构的卡片并插入页面
+   * @param {Array} ly_poems - 诗词数据数组，每项包含 pic、title、content 字段
+   */
+  function ly_renderPoems(ly_poems) {
+    var ly_list = document.getElementById('ly_list');
+    ly_poems.forEach(function (ly_item) {
+      // 单张卡片的 HTML：上面图片，下面标题和内容
+      var ly_html = '<div class="ly_card">'
+        + '<img src="' + ly_getPicUrl(ly_item.pic) + '" alt="' + ly_item.title + '">'
+        + '<div class="ly_card-body">'
+        + '<h2>' + ly_item.title + '</h2>'
+        + '<p>' + ly_item.content + '</p>'
+        + '</div>'
+        + '</div>';
+      ly_list.insertAdjacentHTML('beforeend', ly_html);
+    });
+  }
+
+  /**
+   * 从本地数据服务器获取 poems 数据：请求成功后渲染卡片，失败时显示提示文字
+   */
+  function ly_loadPoems() {
+    fetch(ly_api + '/poems')
+      .then(function (ly_res) { return ly_res.json(); })
+      .then(function (ly_data) {
+        document.getElementById('ly_tip').textContent = '';
+        ly_renderPoems(ly_data.poems);
+      })
+      .catch(function () {
+        document.getElementById('ly_tip').textContent = '数据加载失败，请先启动 db 文件夹下的数据服务器：node server.js（端口 3004）';
+      });
+  }
+
+  // 页面加载完成后立即拉取数据
+  ly_loadPoems();
+</script>
+</body>
+</html>

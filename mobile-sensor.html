@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!--
+  作者：刘悦
+  学号：24002120220
+  建立时间：2026-11-18
+  使用大模型：GLM-5.3-FlashX
+  功能名称：移动端摇一摇抽菜谱——devicemotion 合成加速度判定摇动，随机抽菜 + 弹出动画，不支持设备自动降级为点按钮抽取
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>摇一摇 · 抽今日菜谱</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:#f6f8fc;min-height:100vh;padding:40px 18px 60px}
+  /* 页面大标题：红色字体 */
+  .ly_title{text-align:center;font-size:26px;color:red;letter-spacing:2px;margin-bottom:10px}
+  /* 页面其余文字统一蓝色 */
+  body,.ly_result,.ly_noSensor,.ly_note,.ly_note p,.ly_back a{color:blue}
+
+  /* 摇动提示语 */
+  .ly_tip{text-align:center;font-size:15px;line-height:1.9;margin-bottom:24px}
+
+  /* 抽取结果卡 */
+  .ly_result{
+    max-width:380px;margin:0 auto;padding:34px 24px;text-align:center;
+    background:#fff;border:1px solid #dbe4ff;border-radius:18px;
+    box-shadow:0 12px 30px rgba(31,41,55,.15);
+  }
+  .ly_result .ly_label{font-size:13px;letter-spacing:2px;opacity:.8}
+  .ly_result .ly_dish{font-size:30px;font-weight:bold;letter-spacing:3px;margin-top:10px}
+  /* 菜品简介与摇动计数 */
+  .ly_info{font-size:13.5px;margin-top:10px;min-height:20px}
+  .ly_count{font-size:12.5px;margin-top:8px;opacity:.75}
+  /* 弹出动画：从小放大再回弹，随每次抽取重新触发 */
+  .ly_result.ly_pop{animation:ly_pop .45s ease}
+  @keyframes ly_pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+
+  /* 降级方案提示框：设备不支持传感器时显示 */
+  .ly_noSensor{
+    display:none;max-width:380px;margin:20px auto 0;text-align:center;
+    background:#fffbea;border:1px solid #fde68a;border-radius:14px;padding:16px 18px;font-size:13.5px;line-height:2;
+  }
+  .ly_noSensor button{
+    margin-top:10px;border:none;background:linear-gradient(135deg,#0f2b5b,#1d5bbf);color:#fff;
+    font-size:15px;padding:12px 34px;border-radius:999px;cursor:pointer;font-family:inherit;
+  }
+  .ly_noSensor button:active{transform:scale(.96)}
+
+  /* 降级原因说明 */
+  .ly_note{
+    max-width:380px;margin:26px auto 0;background:#f0fdf4;border:1.5px dashed #16a34a;
+    border-radius:14px;padding:14px 18px;font-size:13.5px;line-height:2;
+  }
+  .ly_note b{color:#15803d}
+  .ly_back{text-align:center;margin-top:24px}
+  .ly_back a{font-size:14.5px;font-weight:bold;text-decoration:none;border:1px solid #c7d8f8;background:#fff;border-radius:999px;padding:10px 26px;display:inline-block}
+</style>
+</head>
+<body>
+
+  <h1 class="ly_title">摇一摇 · 抽今日菜谱</h1>
+  <!-- 页面提示：摇一摇手机抽菜谱 -->
+  <p class="ly_tip">摇一摇手机，抽今日菜谱 🍜</p>
+
+  <!-- 抽取结果：下方显示 -->
+  <div class="ly_result" id="ly_result">
+    <div class="ly_label">—— 今日菜谱 ——</div>
+    <div class="ly_dish" id="ly_dish">等你来摇</div>
+    <div class="ly_info" id="ly_info">摇一摇随机换菜</div>
+    <div class="ly_count" id="ly_count">已摇 0 次</div>
+  </div>
+
+  <!-- 降级方案：检测不到传感器时显示 -->
+  <div class="ly_noSensor" id="ly_noSensor">
+    当前设备不支持，请用手机打开<br>
+    <button id="ly_pickBtn" type="button">点我抽一次</button>
+  </div>
+
+  <!-- iOS 专用授权框：iPhone 必须由用户点击触发传感器权限申请 -->
+  <div class="ly_noSensor" id="ly_iosAuth" style="display:none">
+    iPhone 需要授权后才能摇一摇（请用 Safari 打开本页）<br>
+    <button id="ly_authBtn" type="button">开启摇一摇</button>
+  </div>
+
+  <!-- 说明：为什么必须做降级 -->
+  <div class="ly_note">
+    <b>为什么要做降级？</b><br>
+    devicemotion 事件依赖设备的<b>加速度计/陀螺仪</b>硬件：电脑等桌面设备通常没有传感器，事件根本不触发或 accelerationIncludingGravity 一直为 null；
+    部分 iOS 浏览器还要求用户<b>主动授权</b>后才允许网页读取传感器数据。如果不做降级，这些环境里页面将毫无反应。
+    所以检测不到事件或没有数据时，退化为「点我抽一次」按钮——复用同一套随机抽菜逻辑，保证任何设备都能完成核心功能。
+  </div>
+
+  <div class="ly_back"><a href="index.html">返回首页</a></div>
+
+<script>
+  /** 判定摇动的合成加速度阈值（m/s²，含重力分量） */
+  var ly_shakeThreshold = 18;
+  /** 冷却时间（ms）：一次摇动触发后 1.5 秒内不再响应，防止同一次摇动重复抽菜 */
+  var ly_cooldownMs = 1500;
+  /** 上一次成功触发摇动的时间戳 */
+  var ly_lastShake = 0;
+  /** 设备是否支持传感器：用于控制降级提示框的显示 */
+  var ly_sensorOk = false;
+  /** 收到加速度数据全为 null 的次数：连续多次无数据也判定为不支持 */
+  var ly_emptyCount = 0;
+  /** 累计成功摇动次数，显示在结果下方作为摇一摇生效的直观反馈 */
+  var ly_shakeCount = 0;
+  /** 今日菜谱候选列表：name 菜名 + info 一句简介，摇一摇后整块内容一起换 */
+  var ly_dishes = [
+    { name: '红烧肉', info: '五花肉慢炖，肥而不腻，入口即化。' },
+    { name: '麻婆豆腐', info: '麻辣鲜香，豆腐嫩滑，下饭神器。' },
+    { name: '宫保鸡丁', info: '花生香脆，鸡肉滑嫩，酸甜微辣。' },
+    { name: '鱼香肉丝', info: '咸甜酸辣兼备，经典川味家常菜。' },
+    { name: '番茄炒蛋', info: '酸甜开胃，国民级下饭家常菜。' },
+    { name: '可乐鸡翅', info: '甜香软糯，新手也能做的硬菜。' },
+    { name: '酸辣土豆丝', info: '爽脆酸辣，清口解腻首选。' },
+    { name: '清蒸鲈鱼', info: '原汁原味，鲜嫩清淡高蛋白。' }
+  ];
+
+  /**
+   * 随机抽取一道菜显示出来：与当前菜品不重复（保证摇一摇内容一定变化），并重放弹出动画、更新摇动计数
+   */
+  function ly_pick() {
+    var ly_dishEl = document.getElementById('ly_dish');
+    var ly_old = ly_dishEl.textContent;
+    var ly_dish = null;
+    // 重新抽取直到与当前显示的菜不同，确保每次摇动内容都发生变化
+    do {
+      ly_dish = ly_dishes[Math.floor(Math.random() * ly_dishes.length)];
+    } while (ly_dishes.length > 1 && ly_dish.name === ly_old);
+    ly_dishEl.textContent = ly_dish.name;
+    document.getElementById('ly_info').textContent = ly_dish.info;
+    // 累计摇动次数并显示
+    ly_shakeCount++;
+    document.getElementById('ly_count').textContent = '已摇 ' + ly_shakeCount + ' 次';
+    var ly_box = document.getElementById('ly_result');
+    // 先移除动画类并强制回流，再重新添加，保证连续抽取也能重新播放
+    ly_box.classList.remove('ly_pop');
+    void ly_box.offsetWidth;
+    ly_box.classList.add('ly_pop');
+  }
+
+  /**
+   * 显示降级提示框（当前设备不支持 + 点我抽一次按钮）
+   */
+  function ly_showFallback() {
+    if (ly_sensorOk) { return; }
+    document.getElementById('ly_noSensor').style.display = 'block';
+  }
+
+  /**
+   * 监听 devicemotion：取 accelerationIncludingGravity 的 x/y/z 计算合成加速度，超过阈值且不在冷却期内则判定为一次摇动
+   * @param {DeviceMotionEvent} ly_e - 设备运动事件对象
+   */
+  function ly_onMotion(ly_e) {
+    var ly_a = ly_e.accelerationIncludingGravity;
+    // 没有加速度数据：累计到一定次数判定为不支持，走降级
+    if (!ly_a || (ly_a.x === null && ly_a.y === null && ly_a.z === null)) {
+      ly_emptyCount++;
+      if (ly_emptyCount >= 10) { ly_showFallback(); }
+      return;
+    }
+    // 第一次拿到有效数据：标记传感器可用并隐藏降级提示
+    if (!ly_sensorOk) {
+      ly_sensorOk = true;
+      document.getElementById('ly_noSensor').style.display = 'none';
+    }
+    // 合成加速度 = 三轴分量的平方和开根号
+    var ly_mag = Math.sqrt(ly_a.x * ly_a.x + ly_a.y * ly_a.y + ly_a.z * ly_a.z);
+    // 超过阈值且已过冷却期才判定为一次有效摇动
+    var ly_now = Date.now();
+    if (ly_mag > ly_shakeThreshold && ly_now - ly_lastShake > ly_cooldownMs) {
+      ly_lastShake = ly_now;
+      ly_pick();
+    }
+  }
+
+  /**
+   * 申请 iOS 传感器权限：requestPermission 必须由用户点击按钮触发，授权成功后隐藏授权框，拒绝则进入降级
+   */
+  function ly_requestAuth() {
+    window.DeviceMotionEvent.requestPermission()
+      .then(function (ly_state) {
+        if (ly_state === 'granted') {
+          // 授权成功：隐藏授权框，之后 devicemotion 事件会开始触发
+          document.getElementById('ly_iosAuth').style.display = 'none';
+        } else {
+          ly_showFallback();
+        }
+      })
+      .catch(function () { ly_showFallback(); });
+  }
+
+  /**
+   * 页面初始化：绑定 devicemotion 与降级按钮；检测不到事件时 1.2 秒后自动进入降级
+   */
+  function ly_init() {
+    // iOS 13+ 的 Safari 需要用户主动点击授权：显示「开启摇一摇」按钮
+    if (window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function') {
+      document.getElementById('ly_iosAuth').style.display = 'block';
+      document.getElementById('ly_authBtn').addEventListener('click', ly_requestAuth);
+    }
+    if (window.DeviceMotionEvent) {
+      // 浏览器支持该事件：注册监听，若数据一直没有则由 ly_onMotion 里的空数据计数触发降级
+      window.addEventListener('devicemotion', ly_onMotion);
+      // 1.2 秒内一个事件都没触发过（如桌面电脑无传感器），自动显示降级方案
+      setTimeout(function () {
+        if (!ly_sensorOk && ly_emptyCount === 0) { ly_showFallback(); }
+      }, 1200);
+    } else {
+      // 浏览器完全不支持 DeviceMotionEvent：立即降级
+      ly_showFallback();
+    }
+    // 降级按钮：复用同一套随机抽菜逻辑
+    document.getElementById('ly_pickBtn').addEventListener('click', ly_pick);
+  }
+
+  ly_init();
+</script>
+</body>
+</html>
