@@ -73,3 +73,11 @@
 提示词：按照摇一摇要求，修改一下内容，要摇一摇改变内容（mobile-sensor.html：每次摇出的菜不与当前重复、菜品带简介、增加摇动次数计数器，让摇动后内容变化更明显）
 ## 2026-11-18 15:19:14 | GLM-5.3-Flash
 提示词：直接生成能让我的手机摇一摇换页面的代码 / 怎么能让我的手机支持摇一摇（mobile-sensor.html 增加 iOS 授权按钮 requestPermission，HTTPS+Safari+授权三条件说明）
+## 2026-11-18 18:25:50 | GLM-5.3-Flash
+提示词：将D:\June_css\mobile-zoom.html添加到index.html中，并把这个视频插入（首页扩展板块新增图片查看器入口卡片，并在卡片内插入演示视频）
+## 2026-11-18 18:27:33 | GLM-5.3-Flash
+提示词：将D:\June_css\mobile-sensor.html也上传到index.html中（扩展板块新增摇一摇抽菜谱卡片，并插入演示视频）
+## 2026-11-18 18:28:22 | GLM-5.3-Flash
+提示词：D:\June_css\mobile-gesture.html这个也上传（index.html 扩展板块新增滑动切换美食卡片入口）
+## 2026-11-18 18:30:09 | GLM-5.3-Flash
+提示词：这两个视频是插在点开任务里面的，不要放在外面，外面要整齐的一个一个小模块（首页卡片移除视频，视频移入 mobile-zoom.html 和 mobile-sensor.html 页面内）
